@@ -45,7 +45,8 @@ NOTE: The GitHub repository also contains the dataset for the assignment so you 
 ##Loading and preprocessing the data
 
 
-```{r, echo = TRUE}
+
+```r
 dat <- read.csv("./activity.csv", header = TRUE, sep = ",", colClasses = c("numeric", "factor", "numeric"))
 ```
 
@@ -57,20 +58,35 @@ For this part of the assignment, missing values in the dataset were ignored.
 1. A histogram of the total number of steps taken each day
 
 
-```{r, echo = TRUE}
+
+```r
 library(lattice)
 histogram(with(dat, tapply(dat$steps, dat$date, sum)), xlab = "Number of steps taken per day", main = list(label = "Histogram: Total steps each day", cex=1.5), breaks = 20)
 ```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
 
 
 2. Calculating and reporting the **mean** and **median** total number of steps taken per day
 
 
-```{r, echo = TRUE}
+
+```r
 meanval <- round(mean(with(dat, tapply(dat$steps, dat$date, sum)), na.rm = TRUE), digits = 6)
 medianval <- round(median(with(dat, tapply(dat$steps, dat$date, sum)), na.rm = TRUE), digits = 6)
 sprintf("Mean = %g", meanval)
+```
+
+```
+## [1] "Mean = 10766.2"
+```
+
+```r
 sprintf("Median = %01d", medianval)
+```
+
+```
+## [1] "Median = 10765"
 ```
 
 
@@ -79,18 +95,27 @@ sprintf("Median = %01d", medianval)
 1. Below is a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 
-```{r, echo = TRUE}
+
+```r
 dat$interval <- factor(dat$interval)
 avgsteps <- aggregate(steps ~ interval, dat, mean)
 xyplot(steps ~ interval, avgsteps, type = 'l', ylab = "Average number of steps", xlab = "Time stamp in a day", main = list(label = "Time series plot:Average daily activity", cex=1.5), scales = list(x = list(at = seq(10,250,40))))
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
 
 2. The 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps is:
 
 
-```{r, echo = TRUE}
+
+```r
 avgsteps$interval[(avgsteps$steps == max(avgsteps$steps))]
+```
+
+```
+## [1] 835
+## 288 Levels: 0 5 10 15 20 25 30 35 40 45 50 55 100 105 110 115 120 ... 2355
 ```
 
 
@@ -101,15 +126,21 @@ Note that there are a number of days/intervals where there are missing values (c
 1. Calculating and reporting the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 
-```{r, echo = TRUE}
+
+```r
 sprintf("Total number of missing values in the dataset = %g", sum(is.na(dat)))
+```
+
+```
+## [1] "Total number of missing values in the dataset = 2304"
 ```
 
 
 2. A strategy was devised for filling in all of the missing values in the dataset. The strategy uses the mean for that 5-minute interval across all days
 
 
-```{r, echo = TRUE}
+
+```r
 while (sum(is.na(dat)) != 0) { 
   dat[is.na(dat), 1] <- avgsteps[(avgsteps$interval == dat[is.na(dat), 3]), 2] 
   }
@@ -119,7 +150,8 @@ while (sum(is.na(dat)) != 0) {
 3. Created a new dataset that is equal to the original dataset but with the missing data filled in
 
 
-```{r, echo = TRUE}
+
+```r
 newdat <- dat
 ```
 
@@ -127,20 +159,35 @@ newdat <- dat
 4a. A histogram of the total number of steps taken each day 
 
 
-```{r, echo = TRUE}
+
+```r
 library(lattice)
 histogram(with(newdat, tapply(newdat$steps, newdat$date, sum)), xlab = "Number of steps taken per day", main = list(label = "Histogram: Total steps each day", cex=1.5), breaks = 20)
 ```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 
 
 4b. Calculating and reporting the **mean** and **median** total number of steps taken per day
 
 
-```{r, echo = TRUE}
+
+```r
 meanval <- round(mean(with(newdat, tapply(newdat$steps, newdat$date, sum)), na.rm = TRUE), digits = 6)
 medianval <- round(median(with(newdat, tapply(newdat$steps, newdat$date, sum)), na.rm = TRUE), digits = 6)
 sprintf("Mean = %g", meanval)
+```
+
+```
+## [1] "Mean = 10766.2"
+```
+
+```r
 sprintf("Median = %01g", medianval)
+```
+
+```
+## [1] "Median = 10766.2"
 ```
 
 
@@ -153,7 +200,8 @@ Using the dataset with the filled-in missing values for this part.
 1. Created a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
 
-```{r, echo = TRUE}
+
+```r
 library(plyr)
 newdat$weekdays <- weekdays(as.Date(newdat$date), abbreviate = TRUE)
 newdat$weekdays <- factor(newdat$weekdays)
@@ -164,10 +212,13 @@ newdat$weekdays <- revalue(newdat$weekdays, c("Sat"="Weekend", "Sun"="Weekend", 
 2. A panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
 
-```{r, echo = TRUE}
+
+```r
 library(dplyr)
 seldat <- select(newdat, -date)
 gdat <- group_by(seldat, weekdays, interval)
 tdat <- gdat %>% summarise_each(funs(mean))
 xyplot(steps ~ interval | weekdays, tdat, type = 'l', ylab = "Average number of steps", xlab = "Time stamp in a day", main = list(label = "Time series plot:Average daily activity", cex=1.5), scales = list(x = list(at = seq(10,250,40))), layout = c(1,2))
 ```
+
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
