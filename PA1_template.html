@@ -373,26 +373,7 @@ newdat$weekdays &lt;- revalue(newdat$weekdays, c(&quot;Sat&quot;=&quot;Weekend&q
 </ol>
 
 <pre><code class="r">library(dplyr)
-</code></pre>
-
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;
-## 
-## The following objects are masked from &#39;package:plyr&#39;:
-## 
-##     arrange, count, desc, failwith, id, mutate, rename, summarise,
-##     summarize
-## 
-## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter
-## 
-## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union
-</code></pre>
-
-<pre><code class="r">seldat &lt;- select(newdat, -date)
+seldat &lt;- select(newdat, -date)
 gdat &lt;- group_by(seldat, weekdays, interval)
 tdat &lt;- gdat %&gt;% summarise_each(funs(mean))
 xyplot(steps ~ interval | weekdays, tdat, type = &#39;l&#39;, ylab = &quot;Average number of steps&quot;, xlab = &quot;Time stamp in a day&quot;, main = list(label = &quot;Time series plot:Average daily activity&quot;, cex=1.5), scales = list(x = list(at = seq(10,250,40))), layout = c(1,2))

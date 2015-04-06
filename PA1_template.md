@@ -1,7 +1,7 @@
 ---
 title: "RepRes_CourseProject"
 author: "Aaditya Uppal"
-date: "Monday, Apr 6, 2015"
+date: "Monday, Apr 6th, 2015"
 output: html_document
 ---
 
@@ -215,27 +215,6 @@ newdat$weekdays <- revalue(newdat$weekdays, c("Sat"="Weekend", "Sun"="Weekend", 
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:plyr':
-## 
-##     arrange, count, desc, failwith, id, mutate, rename, summarise,
-##     summarize
-## 
-## The following object is masked from 'package:stats':
-## 
-##     filter
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 seldat <- select(newdat, -date)
 gdat <- group_by(seldat, weekdays, interval)
 tdat <- gdat %>% summarise_each(funs(mean))
